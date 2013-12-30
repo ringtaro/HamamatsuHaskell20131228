@@ -1,6 +1,6 @@
 import System.Environment (getArgs)
 import Text.Regex (Regex, mkRegex, subRegex)
-import Control.Monad (forM)
+import FileUtil (readAllFiles)
 
 main :: IO ()
 main = do
@@ -20,14 +20,3 @@ getSubstResults :: Regex -> String -> [FilePath] -> IO [String]
 getSubstResults reg rep files = do
 	conts <- readAllFiles files
 	return $ map (\cont -> subRegex reg cont rep) conts
-
-readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]

@@ -1,6 +1,7 @@
 import System.Environment (getArgs)
 import Data.List (isInfixOf)
-import Control.Monad (forM, forM_, when)
+import Control.Monad (forM_)
+import FileUtil (readAllFiles)
 
 main :: IO ()
 main = do
@@ -22,17 +23,6 @@ getGrepResults :: String -> [FilePath] -> IO [(FilePath, [String])]
 getGrepResults target files = do
 	conts <- readAllFiles files
 	return $ zip files $ map (grep target) conts
-
-readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]
 
 displayGrepResult :: [(String, [String])] -> IO ()
 displayGrepResult results = do

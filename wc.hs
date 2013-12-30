@@ -1,5 +1,6 @@
 import System.Environment (getArgs)
-import Control.Monad (when, forM)
+import Control.Monad (when)
+import FileUtil (readAllFiles)
 
 main :: IO ()
 main = do
@@ -28,17 +29,6 @@ getWCNList :: [FilePath] -> IO [WCN]
 getWCNList files = do
 	conts <- readAllFiles files
 	return $ zip files $ map getWC conts
-
-readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]
 
 displayWCNList :: [WCN] -> IO ()
 displayWCNList wcn_list = do

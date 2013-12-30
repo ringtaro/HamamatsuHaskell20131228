@@ -1,5 +1,5 @@
 import System.Environment (getArgs)
-import Control.Monad (forM)
+import FileUtil (readAllFiles)
 
 main :: IO ()
 main = do
@@ -7,13 +7,3 @@ main = do
 	conts <- readAllFiles files
 	mapM_ putStr conts
 
-readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]

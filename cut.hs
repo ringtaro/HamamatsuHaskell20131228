@@ -1,14 +1,18 @@
 import System.Environment (getArgs)
-import Control.Monad (forM)
+import FileUtil (readAllLines)
 
 main :: IO ()
 main = do
 	args <- getArgs
-	let
-		no = read $ head args
-		files = tail args
-	lins <- readAllLines files
-	mapM_ putStrLn $ map (cutAt no) lins
+	if length args > 0
+	then do
+		let
+			no = read $ head args
+			files = tail args
+		lins <- readAllLines files
+		mapM_ putStrLn $ map (cutAt no) lins
+	else do
+		error "cut no [files]"
 
 cutAt :: Int -> String -> String
 cutAt _ "" = []
@@ -20,12 +24,3 @@ tabwords cs = bef : (if aft == "" then [] else tabwords $ tail aft)
 		bef = takeWhile (/= '\t') cs
 		aft = dropWhile (/= '\t') cs
 
-readAllLines :: [FilePath] -> IO [String]
-readAllLines files = if length files > 0
-	then do
-		fmap concat $ forM files $ \fpath -> do
-			cont <- readFile fpath
-			return $ lines cont
-	else do
-		cont <- getContents
-		return $ lines cont
