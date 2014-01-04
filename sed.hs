@@ -22,12 +22,5 @@ getSubstResults reg rep files = do
 	return $ map (\cont -> subRegex reg cont rep) conts
 
 readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]
+readAllFiles []    = (:[]) `fmap` getContents 
+readAllFiles files = forM files $ \fpath -> readFile fpath
