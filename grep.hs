@@ -1,7 +1,7 @@
 import System.Environment (getArgs)
 import Data.List (isInfixOf)
 import Control.Monad (forM_)
-import FileUtil (readAllFiles)
+import FileUtil (readAllFileContents)
 
 main :: IO ()
 main = do
@@ -20,9 +20,7 @@ grep :: String -> String -> [String]
 grep target cont = filter (isInfixOf target) (lines cont)
 
 getGrepResults :: String -> [FilePath] -> IO [(FilePath, [String])]
-getGrepResults target files = do
-	conts <- readAllFiles files
-	return $ zip files $ map (grep target) conts
+getGrepResults target files = (map (\(fpath, cont) -> (fpath, grep target cont))) `fmap` readAllFileContents files
 
 displayGrepResult :: [(String, [String])] -> IO ()
 displayGrepResult results = do

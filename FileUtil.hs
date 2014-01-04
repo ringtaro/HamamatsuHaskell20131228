@@ -1,24 +1,17 @@
-module FileUtil (readAllFiles, readAllLines) where
+module FileUtil (readAllFiles, readAllFileContents, readAllLines, FileContent) where
 
 import Control.Monad (forM)
 
+type FileContent = (FilePath, String)
+
 readAllFiles :: [FilePath] -> IO [String]
-readAllFiles files = do
-	if length files > 0
-	then do
-		forM files $ \fpath -> do
-			cont <- readFile fpath
-			return cont
-	else do
-		cont <- getContents
-		return $ [cont]
+readAllFiles []    = (:[]) `fmap` getContents 
+readAllFiles files = forM files $ \fpath -> readFile fpath
+
+readAllFileContents :: [FilePath] -> IO ([FileContent])
+readAllFileContents []    = (:[]) `fmap` ((,) "") `fmap` getContents 
+readAllFileContents files = forM files $ \fpath -> ((,) fpath) `fmap` readFile fpath
 
 readAllLines :: [FilePath] -> IO [String]
-readAllLines files = if length files > 0
-	then do
-		fmap concat $ forM files $ \fpath -> do
-			cont <- readFile fpath
-			return $ lines cont
-	else do
-		cont <- getContents
-		return $ lines cont
+readAllLines [] = lines `fmap` getContents
+readAllLines files = lines `fmap` concat `fmap` readAllFiles files

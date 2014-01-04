@@ -1,6 +1,6 @@
 import System.Environment (getArgs)
 import Control.Monad (when)
-import FileUtil (readAllFiles)
+import FileUtil (readAllFileContents, FileContent)
 
 main :: IO ()
 main = do
@@ -17,18 +17,16 @@ plusWC (c1, w1, l1) (c2, w2, l2) = (c1 + c2, w1 + w2, l1 + l2)
 showWC :: WCN -> String
 showWC (fn, (c, w, l)) = show l ++ "\t" ++ show w ++ "\t" ++ show c ++ "\t" ++ fn
 
-getWC :: String -> WC
-getWC cont =
+getWCN :: FileContent -> WCN
+getWCN (fpath, cont) =
 	let
 		ccount = length cont
 		wcount = length $ words cont
 		lcount = length $ lines cont
-	in (ccount, wcount, lcount)
+	in (fpath, (ccount, wcount, lcount))
 
 getWCNList :: [FilePath] -> IO [WCN]
-getWCNList files = do
-	conts <- readAllFiles files
-	return $ zip files $ map getWC conts
+getWCNList files = (map getWCN) `fmap` readAllFileContents files
 
 displayWCNList :: [WCN] -> IO ()
 displayWCNList wcn_list = do
