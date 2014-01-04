@@ -5,16 +5,21 @@ import FileUtil (readAllFileContents)
 
 main :: IO ()
 main = do
+	(target, files) <- getGrepArgs
+	results <- getGrepResults target files
+	displayGrepResult results
+
+getGrepArgs :: IO (String, [FilePath])
+getGrepArgs = do
 	args <- getArgs
-	if length args >= 1
-	then do
+	if null args
+	then
+		error "grep target [files]"
+	else do
 		let
 			target = head args
 			files = tail args
-		results <- getGrepResults target files
-		displayGrepResult results
-	else
-		error "grep target [files]"
+		return (target, files)
 
 grep :: String -> String -> [String]
 grep target cont = filter (isInfixOf target) (lines cont)

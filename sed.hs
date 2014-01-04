@@ -4,6 +4,12 @@ import FileUtil (readAllFiles)
 
 main :: IO ()
 main = do
+	(reg, rep, files) <- getSedArgs
+	results <- getSubstResults reg rep files
+	mapM_ putStr results
+
+getSedArgs :: IO (Regex, String, [FilePath])
+getSedArgs = do
 	args <- getArgs
 	if length args >= 2
 	then do
@@ -11,8 +17,7 @@ main = do
 			reg = mkRegex (args !! 0)
 			rep = args !! 1
 			files = tail $ tail args
-		results <- getSubstResults reg rep files
-		mapM_ putStr results
+		return (reg, rep, files)
 	else do
 		error "sed reg rep [files]"
 

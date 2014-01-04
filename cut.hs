@@ -3,16 +3,21 @@ import FileUtil (readAllLines)
 
 main :: IO ()
 main = do
+	(no, files) <- getCutArgs
+	lins <- readAllLines files
+	mapM_ putStrLn $ map (cutAt no) lins
+
+getCutArgs :: IO (Int, [FilePath])
+getCutArgs = do
 	args <- getArgs
-	if length args > 0
+	if null args
 	then do
+		error "cut no [files]"
+	else do
 		let
 			no = read $ head args
 			files = tail args
-		lins <- readAllLines files
-		mapM_ putStrLn $ map (cutAt no) lins
-	else do
-		error "cut no [files]"
+		return (no, files)
 
 cutAt :: Int -> String -> String
 cutAt _ "" = []
